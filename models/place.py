@@ -1,18 +1,18 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Float, Integer, String, ForeignKey
+from sqlalchemy import Table, Column, Float, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from models import storage
-from models.amenity import Amenity
+from os import getenv
 
-
-place_amenity = Table('PlaceAmenity', Base.metadata,
+place_amenity = Table('place_amenity', Base.metadata,
                       Column('amenity_id', String(60),
                              ForeignKey('amenities.id'),
+                             primary_key=True),
                              nullable=False),
                       Column('place_id', String(60),
                              ForeignKey('places.id'),
+                             primary_key=True),
                              nullable=False)
                       )
 
@@ -36,8 +36,8 @@ class Place(BaseModel, Base):
         reviews = relationship("Review", backref="place",
                                cascade="all, delete")
         amenities = relationship('Amenity',
-                                 secondary=place_amenity,
-                                 viewonly=False)
+                                    secondary=place_amenity,
+                                    viewonly=False)
                                  
     else:
         @property
@@ -45,16 +45,17 @@ class Place(BaseModel, Base):
             """Getter attribute cities that returns the list of Review"""
             from models import storage
             from models.review import Review
-            list = []
+            my_list = []
             all_reviews = storage.all(Review)
             for review in all_reviews.values():
                 if review.place_id == self.id:
-                    list.append(review)
-            return list
+                    my_list.append(review)
+            return my_list
             
     @amenities.setter
     def amenities(self, obj=None):
         """Setter atrributes for amenities"""
+        from models.amenity import Amenity
         if type(obj) is Amenity:
             self.amenity_ids.append(obj.id)
         else:
