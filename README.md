@@ -7,6 +7,7 @@
 </p>
 
 ## Description
+
 In this project we learned how to build a database engine with the SQLAlchemy Python library. 
 
 <p align="center">
@@ -26,6 +27,8 @@ HolbertonBnB supports the following classes:
 * Place
 * Review
 
+## Storage
+
 The above classes are handled by one of either two abstracted storage engines,
 depending on the call - [FileStorage](./models/engine/file_storage.py) or
 [DBStorage](./models/engine/db_storage.py).
@@ -42,7 +45,6 @@ object is loaded/re-loaded from any class instances stored in the JSON file
 
 ### DBStorage
 
-
 Run by setting the environmental variables `HBNB_TYPE_STORAGE=db`.
 
 In `DBStorage` mode, every time the backend is initialized, HolbertonBnB
@@ -58,9 +60,12 @@ Connection and querying is achieved using SQLAlchemy.
 Unittests for the HolbertonBnB project are defined in the [tests](./tests)
 folder. To run the entire test suite simultaneously, execute the following command:
 
+
 $ python3 unittest -m discover tests
 
+
 Alternatively, you can specify a single test file to run at a time:
+
 
 $ python3 unittest -m tests/test_console.py
 
