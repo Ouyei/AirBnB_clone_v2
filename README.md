@@ -69,4 +69,4 @@ $ python3 unittest -m tests/test_console.py
 ## Authors
 
 **Oscar Bedat** <[Ouyei](https://github.com/Ouyei)>
-**Diego Monfort** <[DiegoMHol](https://github.com/DiegoMHol)
+**Diego Monfort** <[DiegoMHol](https://github.com/DiegoMHol)>
