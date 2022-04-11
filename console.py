@@ -3,7 +3,7 @@
 import cmd
 import sys
 from models.base_model import BaseModel
-from models.__init__ import storage
+from models import storage
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -17,12 +17,8 @@ class HBNBCommand(cmd.Cmd):
 
     # determines prompt for interactive/non-interactive modes
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
-
-    classes = {
-               'BaseModel': BaseModel, 'User': User, 'Place': Place,
-               'State': State, 'City': City, 'Amenity': Amenity,
-               'Review': Review
-              }
+    
+    classes = { "BaseModel", "User", "State", "City", "Amenity", "Place", "Review" }   
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
              'number_rooms': int, 'number_bathrooms': int,
@@ -115,17 +111,32 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if not args:
-            print("** class name missing **")
-            return
-        elif args not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
-        print(new_instance.id)
-        storage.save()
+                try:
+            arguments = args.split(" ")
+            # arguments[0]) --> Class name
+            objects = eval("{}()".format(arguments[0]))
+            for parameters in arguments[1:]:
+                if "=" not in parameters:
+                    continue
+                key, value = parameters.split("=")
+                value = eval(value)
+                if type(value) not in {int, float, str}:
+                    continue
+                if type(value) == str:
+                    value = value.replace("_", " ")
 
+                # Set attributes
+                setattr(objects, key, value)
+            # Save object
+            objects.save()
+            # Print id
+            print("{}".format(objects.id))
+
+        except AttributeError:
+            print("** class name missing **")
+        except NameError:        
+            print("** class doesn't exist **")
+            
     def help_create(self):
         """ Help information for the create method """
         print("Creates a class of any type")
@@ -158,6 +169,29 @@ class HBNBCommand(cmd.Cmd):
             print(storage._FileStorage__objects[key])
         except KeyError:
             print("** no instance found **")
+
+    # try:
+        #     if not args:
+        #         raise SyntaxError()
+        #     my_list = args.split(" ")
+        #     if my_list[0] not in self.classes:
+        #         raise NameError()
+        #     if len(my_list) < 2:
+        #         raise IndexError()
+        #     objects = storage.all()
+        #     key = my_list[0] + '.' + my_list[1]
+        #     if key in objects:
+        #         print(objects[key])
+        #     else:
+        #         raise KeyError()
+        # except SyntaxError:
+        #     print("** class name missing **")
+        # except NameError:
+        #     print("** class doesn't exist **")
+        # except IndexError:
+        #     print("** instance id missing **")
+        # except KeyError:
+        #     print("** no instance found **")
 
     def help_show(self):
         """ Help information for the show command """
