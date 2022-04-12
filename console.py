@@ -344,5 +344,10 @@ class HBNBCommand(cmd.Cmd):
         print("Usage: update <className> <id> <attName> <attVal>\n")
 
 
+<<<<<<< HEAD
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
+=======
+if __name__ == "__main__":
+    HBNBCommand().cmdloop()
+>>>>>>> 50d2233419d7957f7349e08c0cc7a60be47c7ab6
