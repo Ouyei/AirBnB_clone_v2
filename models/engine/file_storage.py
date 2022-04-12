@@ -1,13 +1,6 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
 import json
-from models.base_model import BaseModel
-from models.user import User
-from models.place import Place
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.review import Review
 
 
 class FileStorage:
@@ -18,21 +11,16 @@ class FileStorage:
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
         if cls is not None:
-            if type(cls) == str:
-                cls = eval(cls)
-            new_dict = {}
+            obj_dict = {}
             for key, value in self.__objects.items():
-                # if self.__class__.__name__ == cls:
-                if type(value) == cls:
-                    new_dict[key] = value
-            return new_dict
+                if cls == value.__class__:
+                    obj_dict[key] = value
+            return obj_dict
         return self.__objects
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        if obj:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            self.__objects[key] = obj
+        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
 
     def save(self):
         """Saves storage dictionary to file"""
@@ -45,6 +33,14 @@ class FileStorage:
 
     def reload(self):
         """Loads storage dictionary from file"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
+
         classes = {
                     'BaseModel': BaseModel, 'User': User, 'Place': Place,
                     'State': State, 'City': City, 'Amenity': Amenity,
@@ -60,12 +56,14 @@ class FileStorage:
             pass
 
     def delete(self, obj=None):
-        """Delete obj from __objects if exists """
-        try:
-            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
-        except (AttributeError, KeyError):
-            pass
+        """to delete obj from __objects"""
+        if obj is not None:
+            to_delete = str(obj.__class__.__name__) + "." + str(obj.id)
+            if to_delete in self.__objects:
+                del self.__objects[to_delete]
 
     def close(self):
-        """method for deserializing the JSON file to objetcs"""
+        """
+        Method for deserializing the JSON file to objects
+        """
         self.reload()
