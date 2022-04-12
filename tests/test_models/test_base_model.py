@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""H"""
+"""HO"""
 from models.base_model import BaseModel
 import unittest
 import datetime
@@ -9,7 +9,7 @@ import os
 
 
 class test_basemodel(unittest.TestCase):
-    """H"""
+    """HO"""
 
     def __init__(self, *args, **kwargs):
         """base_model"""
