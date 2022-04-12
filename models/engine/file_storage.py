@@ -1,6 +1,13 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
 import json
+from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 class FileStorage:
@@ -19,8 +26,7 @@ class FileStorage:
                 if type(value) == cls:
                     new_dict[key] = value
             return new_dict
-        else:
-            return self.__objects
+        return self.__objects
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
@@ -39,14 +45,6 @@ class FileStorage:
 
     def reload(self):
         """Loads storage dictionary from file"""
-        from models.base_model import BaseModel
-        from models.user import User
-        from models.place import Place
-        from models.state import State
-        from models.city import City
-        from models.amenity import Amenity
-        from models.review import Review
-
         classes = {
                     'BaseModel': BaseModel, 'User': User, 'Place': Place,
                     'State': State, 'City': City, 'Amenity': Amenity,
@@ -62,12 +60,11 @@ class FileStorage:
             pass
 
     def delete(self, obj=None):
-        """Delete objects"""
-        if obj:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            if self.__objects[key]:
-                del FileStorage.__objects[key]
-                self.save()
+        """Delete obj from __objects if exists """
+        try:
+            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
+        except (AttributeError, KeyError):
+            pass
 
     def close(self):
         """method for deserializing the JSON file to objetcs"""
