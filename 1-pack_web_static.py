@@ -10,7 +10,13 @@ import datetime
 def do_pack():
     """Do_pack function"""
     today = datetime.datetime.now()
-    now = today.strftime('%Y%m%d%H%M%S')
+    now = 'versions/web_static_{}{}{}{}{}{}.tgz'.format(
+        today.year,
+        today.month,
+        today.day,
+        today.hour,
+        today.minute,
+        today.second)
 
     local('mkdir -p versions')
     check = local('tar -cvzf {} web_static'.format(now))
