@@ -14,8 +14,4 @@ def do_pack():
     now = d.strftime('%Y%m%d%H%M%S')
 
     local("mkdir -p versions")
-    check = local("tar -czvf versions/web_static_{}.tgz web_static".format(now))
-    if check.failed:
-        return None
-    else:
-        return now 
+    local("tar -czvf versions/web_static_{}.tgz web_static".format(now))
