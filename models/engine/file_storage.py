@@ -9,18 +9,28 @@ class FileStorage:
     __objects = {}
 
     def all(self, cls=None):
-        """Returns a dictionary of models currently in storage"""
-        if cls is not None:
-            ndict = {}
-            for key, value in self.__objects.items():
-                if cls == value.__class__ or cls == value.__class__.__name__:
-                    ndict[key] = value
-            return ndict
-        return self.__objects
+        """Returns a dictionary of models of class 'cls' from __objects"""
+        if cls:
+            d = {}
+            for k, v in FileStorage.__objects.items():
+                if type(v) is cls:
+                    d[k] = v
+            return d
+        else:
+            return FileStorage.__objects
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
         self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+
+    def delete(self, obj=None):
+        """Deletes obj from __objects if inside"""
+        if obj:
+            for k, v in self.all().items():
+                if v == obj:
+                    self.all().pop(k)
+                    break
+            self.save()
 
     def save(self):
         """Saves storage dictionary to file"""
@@ -51,17 +61,10 @@ class FileStorage:
             with open(FileStorage.__file_path, 'r') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                    self.all()[key] = classes[val['__class__']](**val)
+                        self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
 
-    def delete(self, obj=None):
-        """Method to delete an obj from __objects"""
-        if obj is not None:
-            hi = obj.__class__.__name__ + '.' + obj.id
-            if hi in self.__objects:
-                del self.__objects[hi]
-
     def close(self):
-        """Method for deserializing the JSON file to objects"""
+        """ deserialize json file to objects """
         self.reload()
