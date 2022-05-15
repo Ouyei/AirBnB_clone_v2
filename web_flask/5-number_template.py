@@ -3,67 +3,51 @@
 Script that starts a Flask web application
 5- Number template
 """
-from flask import Flask, render_template
-app = Flask(__name__)
-app.strict_slashes = False
-
-
-@app.route('/')
-def hello_flask():
-    """
-    Return desired string
-    """
-    return "Hello HBNB!"
-
-
-@app.route('/hbnb')
-def hbnb():
-    """
-    Return desired string for /hbnb route
-    """
-    return "HBNB"
-
-
-@app.route('/c/<text>')
-def c_is_fun(text):
-    """
-    Return desired string for /c/<text> route, replace _ with space
-    """
-    return "C {}".format(text.replace("_", " "))
-
-
-@app.route('/python/<text>')
-def python_is_magic(text):
-    """
-    Return desired string for /python/<text> route, replace _ with space
-    """
-    return "Python {}".format(text.replace("_", " "))
-
-
-@app.route('/python/')
-def python_is_cool():
-    """
-    Return default string for /python/ route
-    """
-    text = "is cool"
-    return "Python {}".format(text)
-
-
-@app.route('/number/<int:n>')
-def is_it_a_number(n):
-    """
-    Return a string only if valid int
-    """
-    return "{} is a number".format(n)
-
-
-@app.route('/number_template/<int:n>')
-def number_template(n):
-    """
-    Displays an html page only if number is int
-    """
-    return render_template('5-number.html', number=n)
-
+from flask import Flask
+from flask import render_template
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='5000', debug=True)
+    app = Flask(__name__)
+
+    @app.route('/', strict_slashes=False)
+    def index():
+        """Display 'Hello HBNB!'
+        """
+        return 'Hello HBNB!'
+
+    @app.route('/hbnb', strict_slashes=False)
+    def hbnb():
+        """Display 'HBNB'
+        """
+        return 'HBNB'
+
+    @app.route('/c/<text>', strict_slashes=False)
+    def c(text):
+        """Display “C ” followed by the value of
+        the text variable (replace underscore _
+        symbols with a space)
+        """
+        return 'C ' + text.replace('_', ' ')
+
+    @app.route('/python/')
+    @app.route('/python/<text>', strict_slashes=False)
+    def python(text="is cool"):
+        """Display “Python ”, followed by the value of
+        the text variable (replace underscore _
+        symbols with a space )
+        """
+        return 'Python ' + text.replace('_', ' ')
+
+    @app.route('/number/<int:n>', strict_slashes=False)
+    def number(n):
+        """Display “n is a number” only if n is an integer
+        """
+        return str(n) + ' is a number'
+
+    @app.route('/number_template/<int:n>', strict_slashes=False)
+    def number_template(n):
+        """Display a HTML page only if n is an integer
+        """
+        return render_template('5-number.html', n=n)
+
+    app.run('0.0.0.0')
